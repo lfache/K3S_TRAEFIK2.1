@@ -2,28 +2,27 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   namespace: kube-system
-  name: traefik-ingress
-  labels:
-    app: traefik-ingress
+  name: traefik-ingress-controller
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
   namespace: kube-system
-  name: traefik-ingress
+  name: traefik
   labels:
-    app: traefik-ingress
+    app: traefik
+
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: traefik-ingress
+      app: traefik
   template:
     metadata:
       labels:
-        app: traefik-ingress
+        app: traefik
     spec:
-      serviceAccountName: traefik-ingress
+      serviceAccountName: traefik-ingress-controller
       containers:
         - name: traefik
           image: traefik:2.1
@@ -43,13 +42,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: traefik-ingress
+  name: traefik
   namespace: kube-system
   labels:
-    app: traefik-ingress
+    app: traefik
+
 spec:
   selector:
-    app: traefik-ingress
+    app: traefik
   type: LoadBalancer
   externalTrafficPolicy: Cluster
   ports:
